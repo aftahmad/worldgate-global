@@ -8,6 +8,11 @@
 
 import { IDL } from '@icp-sdk/core/candid';
 
+export const UserRole = IDL.Variant({
+  'admin' : IDL.Null,
+  'user' : IDL.Null,
+  'guest' : IDL.Null,
+});
 export const Category = IDL.Variant({
   'visa' : IDL.Null,
   'immigrationLaw' : IDL.Null,
@@ -47,13 +52,20 @@ export const Testimonial = IDL.Record({
   'name' : IDL.Text,
   'rating' : IDL.Nat8,
 });
+export const UserProfile = IDL.Record({
+  'name' : IDL.Text,
+  'email' : IDL.Text,
+  'phone' : IDL.Text,
+});
 
 export const idlService = IDL.Service({
+  '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
   'addTestimonial' : IDL.Func(
       [IDL.Text, IDL.Text, IDL.Nat8, IDL.Text, IDL.Text],
       [],
       [],
     ),
+  'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
   'createBlogPost' : IDL.Func(
       [IDL.Text, IDL.Text, IDL.Text, Category, IDL.Text],
       [IDL.Nat],
@@ -69,16 +81,36 @@ export const idlService = IDL.Service({
       [],
       [],
     ),
+  'deleteBlogPost' : IDL.Func([IDL.Nat], [], []),
   'getAllBlogPosts' : IDL.Func([], [IDL.Vec(BlogPost)], ['query']),
   'getAllConsultations' : IDL.Func([], [IDL.Vec(Booking)], ['query']),
   'getAllInquiries' : IDL.Func([], [IDL.Vec(ContactInquiry)], ['query']),
   'getAllTestimonials' : IDL.Func([], [IDL.Vec(Testimonial)], ['query']),
   'getBlogPost' : IDL.Func([IDL.Nat], [IDL.Opt(BlogPost)], ['query']),
+  'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
+  'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
+  'getUserProfile' : IDL.Func(
+      [IDL.Principal],
+      [IDL.Opt(UserProfile)],
+      ['query'],
+    ),
+  'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
+  'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
+  'updateBlogPost' : IDL.Func(
+      [IDL.Nat, IDL.Text, IDL.Text, IDL.Text, Category, IDL.Text],
+      [IDL.Bool],
+      [],
+    ),
 });
 
 export const idlInitArgs = [];
 
 export const idlFactory = ({ IDL }) => {
+  const UserRole = IDL.Variant({
+    'admin' : IDL.Null,
+    'user' : IDL.Null,
+    'guest' : IDL.Null,
+  });
   const Category = IDL.Variant({
     'visa' : IDL.Null,
     'immigrationLaw' : IDL.Null,
@@ -118,13 +150,20 @@ export const idlFactory = ({ IDL }) => {
     'name' : IDL.Text,
     'rating' : IDL.Nat8,
   });
+  const UserProfile = IDL.Record({
+    'name' : IDL.Text,
+    'email' : IDL.Text,
+    'phone' : IDL.Text,
+  });
   
   return IDL.Service({
+    '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
     'addTestimonial' : IDL.Func(
         [IDL.Text, IDL.Text, IDL.Nat8, IDL.Text, IDL.Text],
         [],
         [],
       ),
+    'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
     'createBlogPost' : IDL.Func(
         [IDL.Text, IDL.Text, IDL.Text, Category, IDL.Text],
         [IDL.Nat],
@@ -140,11 +179,26 @@ export const idlFactory = ({ IDL }) => {
         [],
         [],
       ),
+    'deleteBlogPost' : IDL.Func([IDL.Nat], [], []),
     'getAllBlogPosts' : IDL.Func([], [IDL.Vec(BlogPost)], ['query']),
     'getAllConsultations' : IDL.Func([], [IDL.Vec(Booking)], ['query']),
     'getAllInquiries' : IDL.Func([], [IDL.Vec(ContactInquiry)], ['query']),
     'getAllTestimonials' : IDL.Func([], [IDL.Vec(Testimonial)], ['query']),
     'getBlogPost' : IDL.Func([IDL.Nat], [IDL.Opt(BlogPost)], ['query']),
+    'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
+    'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
+    'getUserProfile' : IDL.Func(
+        [IDL.Principal],
+        [IDL.Opt(UserProfile)],
+        ['query'],
+      ),
+    'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
+    'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
+    'updateBlogPost' : IDL.Func(
+        [IDL.Nat, IDL.Text, IDL.Text, IDL.Text, Category, IDL.Text],
+        [IDL.Bool],
+        [],
+      ),
   });
 };
 

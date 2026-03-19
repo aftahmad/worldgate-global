@@ -47,11 +47,21 @@ export interface Testimonial {
   'rating' : number,
 }
 export type Time = bigint;
+export interface UserProfile {
+  'name' : string,
+  'email' : string,
+  'phone' : string,
+}
+export type UserRole = { 'admin' : null } |
+  { 'user' : null } |
+  { 'guest' : null };
 export interface _SERVICE {
+  '_initializeAccessControlWithSecret' : ActorMethod<[string], undefined>,
   'addTestimonial' : ActorMethod<
     [string, string, number, string, string],
     undefined
   >,
+  'assignCallerUserRole' : ActorMethod<[Principal, UserRole], undefined>,
   'createBlogPost' : ActorMethod<
     [string, string, string, Category, string],
     bigint
@@ -64,11 +74,21 @@ export interface _SERVICE {
     [string, string, string, string],
     undefined
   >,
+  'deleteBlogPost' : ActorMethod<[bigint], undefined>,
   'getAllBlogPosts' : ActorMethod<[], Array<BlogPost>>,
   'getAllConsultations' : ActorMethod<[], Array<Booking>>,
   'getAllInquiries' : ActorMethod<[], Array<ContactInquiry>>,
   'getAllTestimonials' : ActorMethod<[], Array<Testimonial>>,
   'getBlogPost' : ActorMethod<[bigint], [] | [BlogPost]>,
+  'getCallerUserProfile' : ActorMethod<[], [] | [UserProfile]>,
+  'getCallerUserRole' : ActorMethod<[], UserRole>,
+  'getUserProfile' : ActorMethod<[Principal], [] | [UserProfile]>,
+  'isCallerAdmin' : ActorMethod<[], boolean>,
+  'saveCallerUserProfile' : ActorMethod<[UserProfile], undefined>,
+  'updateBlogPost' : ActorMethod<
+    [bigint, string, string, string, Category, string],
+    boolean
+  >,
 }
 export declare const idlService: IDL.ServiceClass;
 export declare const idlInitArgs: IDL.Type[];

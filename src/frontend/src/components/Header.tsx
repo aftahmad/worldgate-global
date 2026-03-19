@@ -1,8 +1,12 @@
 import { Button } from "@/components/ui/button";
+import { useQueryClient } from "@tanstack/react-query";
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Menu, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { LogIn, LogOut, Menu, X } from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
+import { useInternetIdentity } from "../hooks/useInternetIdentity";
 import BookingModal from "./BookingModal";
+
+const LOGO_SRC = "/assets/generated/worldgate-logo.png";
 
 const NAV_LINKS = [
   { label: "Home", to: "/" },
@@ -13,6 +17,59 @@ const NAV_LINKS = [
   { label: "Blog", to: "/blog" },
   { label: "Contact", to: "/contact" },
 ];
+
+function AuthButton({ className }: { className?: string }) {
+  const { login, clear, loginStatus, identity } = useInternetIdentity();
+  const queryClient = useQueryClient();
+  const isAuthenticated = !!identity;
+  const isLoggingIn = loginStatus === "logging-in";
+
+  const handleAuth = useCallback(async () => {
+    if (isAuthenticated) {
+      clear();
+      queryClient.clear();
+    } else {
+      try {
+        login();
+      } catch (err) {
+        if (
+          err instanceof Error &&
+          err.message === "User is already authenticated"
+        ) {
+          clear();
+          setTimeout(() => login(), 300);
+        }
+      }
+    }
+  }, [isAuthenticated, login, clear, queryClient]);
+
+  if (isAuthenticated) {
+    return (
+      <button
+        type="button"
+        onClick={handleAuth}
+        className={`flex items-center gap-2 text-sm font-medium text-white/80 hover:text-white border border-white/30 hover:border-white/60 rounded-full px-4 py-2 transition-all duration-200 ${className ?? ""}`}
+        data-ocid="nav.secondary_button"
+      >
+        <LogOut className="w-4 h-4" />
+        Logout
+      </button>
+    );
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={handleAuth}
+      disabled={isLoggingIn}
+      className={`flex items-center gap-2 text-sm font-medium text-white border border-white/60 hover:border-gold hover:text-gold rounded-full px-4 py-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${className ?? ""}`}
+      data-ocid="nav.secondary_button"
+    >
+      <LogIn className="w-4 h-4" />
+      {isLoggingIn ? "Logging in..." : "Login"}
+    </button>
+  );
+}
 
 export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -39,21 +96,22 @@ export default function Header() {
             {/* Logo */}
             <Link
               to="/"
-              className="flex items-center flex-shrink-0"
+              className="flex items-center gap-2 flex-shrink-0"
               data-ocid="nav.link"
             >
-              <img
-                src="/assets/uploads/ChatGPT-Image-Mar-18-2026-03_26_41-PM-1.png"
-                alt="WorldGate Global Logo"
-                className="w-32 h-32 object-contain"
-                style={{ marginRight: "-18px" }}
-              />
+              <div className="w-14 h-14 rounded-full bg-white flex items-center justify-center flex-shrink-0">
+                <img
+                  src={LOGO_SRC}
+                  alt="WorldGate Global Logo"
+                  className="w-11 h-11 object-contain"
+                />
+              </div>
               <div className="flex flex-col leading-tight">
                 <span className="font-bold text-lg leading-none">
                   <span className="text-gold">WorldGate</span>
-                  <span className="text-gold"> Global</span>
+                  <span className="text-white"> Global</span>
                 </span>
-                <span className="text-white text-[10px] uppercase tracking-widest">
+                <span className="text-white/70 text-[10px] uppercase tracking-widest">
                   Immigration & Visa Services
                 </span>
               </div>
@@ -69,7 +127,7 @@ export default function Header() {
                   key={link.to}
                   to={link.to}
                   className={`text-sm font-medium transition-colors hover:text-gold ${
-                    currentPath === link.to ? "text-gold" : "text-gold"
+                    currentPath === link.to ? "text-gold" : "text-white"
                   }`}
                   data-ocid="nav.link"
                 >
@@ -78,8 +136,9 @@ export default function Header() {
               ))}
             </nav>
 
-            {/* CTA */}
-            <div className="hidden lg:block">
+            {/* Desktop CTAs */}
+            <div className="hidden lg:flex items-center gap-3">
+              <AuthButton />
               <Button
                 onClick={() => setBookingOpen(true)}
                 className="bg-gold hover:bg-gold-light text-navy font-semibold px-5 py-2 rounded-full shadow-gold"
@@ -114,7 +173,7 @@ export default function Header() {
                 to={link.to}
                 onClick={() => setMobileOpen(false)}
                 className={`block py-3 text-sm font-medium border-b border-white/10 last:border-0 transition-colors hover:text-gold ${
-                  currentPath === link.to ? "text-gold" : "text-gold"
+                  currentPath === link.to ? "text-gold" : "text-white"
                 }`}
                 data-ocid="nav.link"
               >
@@ -131,6 +190,9 @@ export default function Header() {
             >
               Get Free Assessment
             </Button>
+            <div className="mt-3">
+              <AuthButton className="w-full justify-center" />
+            </div>
           </div>
         )}
       </header>
