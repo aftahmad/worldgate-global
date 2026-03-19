@@ -10,7 +10,6 @@ import {
 import Footer from "./components/Footer";
 import Header from "./components/Header";
 import WhatsAppButton from "./components/WhatsAppButton";
-import { InternetIdentityProvider } from "./hooks/useInternetIdentity";
 import { useSeedData } from "./hooks/useQueries";
 import About from "./pages/About";
 import Blog from "./pages/Blog";
@@ -94,10 +93,8 @@ declare module "@tanstack/react-router" {
 
 export default function App() {
   return (
-    <InternetIdentityProvider>
-      <QueryClientProvider client={queryClient}>
-        <RouterProvider router={router} />
-      </QueryClientProvider>
-    </InternetIdentityProvider>
+    <QueryClientProvider client={queryClient}>
+      <RouterProvider router={router} />
+    </QueryClientProvider>
   );
 }

@@ -2,8 +2,6 @@ import { Link } from "@tanstack/react-router";
 import { Mail, MapPin, Phone } from "lucide-react";
 import { SiFacebook, SiInstagram, SiLinkedin, SiX } from "react-icons/si";
 
-const LOGO_SRC = "/assets/generated/worldgate-logo.png";
-
 const SOCIAL_LINKS = [
   { Icon: SiFacebook, href: "https://facebook.com", label: "Facebook" },
   { Icon: SiInstagram, href: "https://instagram.com", label: "Instagram" },
@@ -21,20 +19,22 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
           {/* Brand */}
           <div>
-            <div className="flex items-center gap-2 mb-4">
-              <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center flex-shrink-0">
-                <img
-                  src={LOGO_SRC}
-                  alt="WorldGate Global Logo"
-                  className="w-9 h-9 object-contain"
-                />
-              </div>
+            <div
+              className="flex items-center mb-4"
+              style={{ marginLeft: "-12px" }}
+            >
+              <img
+                src="/assets/uploads/ChatGPT-Image-Mar-18-2026-03_26_41-PM-1.png"
+                alt="WorldGate Global Logo"
+                className="w-20 h-20 object-contain flex-shrink-0"
+                style={{ marginRight: "-8px" }}
+              />
               <div className="flex flex-col leading-tight">
                 <div className="font-bold text-lg leading-none">
                   <span className="text-gold">WorldGate</span>
-                  <span className="text-white"> Global</span>
+                  <span className="text-gold"> Global</span>
                 </div>
-                <div className="text-white/70 text-[10px] uppercase tracking-widest">
+                <div className="text-white text-[10px] uppercase tracking-widest">
                   Immigration & Visa Services
                 </div>
               </div>

@@ -114,15 +114,16 @@ export default function Home() {
       <div ref={heroRef} className="relative min-h-screen overflow-hidden">
         {/* Parallax background */}
         <motion.div
-          className="absolute inset-0 will-change-transform overflow-hidden"
-          style={{ y: bgY, scale: 1.15 }}
-        >
-          <img
-            src="/assets/generated/hero-immigration-3d.dim_1400x900.jpg"
-            alt="Hero background"
-            className="absolute inset-0 w-full h-full object-cover"
-          />
-        </motion.div>
+          className="absolute inset-0 will-change-transform"
+          style={{
+            backgroundImage:
+              "url('/assets/generated/hero-immigration-3d.dim_1400x900.jpg')",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            y: bgY,
+            scale: 1.15,
+          }}
+        />
         {/* Gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-r from-navy/90 via-navy/70 to-transparent" />
 

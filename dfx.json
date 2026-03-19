@@ -1,0 +1,26 @@
+{
+  "canisters": {
+    "backend": {
+      "type": "custom",
+      "build": "src/backend/build.sh",
+      "wasm": "src/backend/main.wasm",
+      "candid": "src/backend/main.did"
+    },
+    "frontend": {
+      "type": "assets",
+      "source": ["src/frontend/dist"],
+      "dependencies": ["backend"]
+    }
+  },
+  "networks": {
+    "local": {
+      "bind": "127.0.0.1:8000",
+      "type": "ephemeral"
+    },
+    "ic": {
+      "providers": ["https://ic0.app"],
+      "type": "persistent"
+    }
+  },
+  "version": 1
+}
